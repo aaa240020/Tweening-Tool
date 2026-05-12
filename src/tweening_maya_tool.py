@@ -34,5 +34,8 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self.slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
         self.slider.setTickInterval(25)
         self.main_layout.addWidget(self.slider)
-
+        # 50% Title
+        self.fifty_title = QtWidgets.QLabel("50%")
+        self.title.setAlignment(QtCore.Qt.AlignCenter)
+        self.main_layout.addWidget(self.fifty_title)
 
