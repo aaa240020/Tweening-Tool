@@ -22,10 +22,17 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self._mk_tween_slider_ui()
 
     def _mk_tween_slider_ui(self):
+        # Title
+        self.title = QtWidgets.QLabel("Tweening Tool")
+        self.title.setAlignment(QtCore.Qt.AlignCenter)
+        self.main_layout.addWidget(self.title)
+        # Slider
         self.slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.slider.setMinimum(0)
         self.slider.setMaximum(100)
         self.slider.setValue(50)
+        self.slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
+        self.slider.setTickInterval(25)
         self.main_layout.addWidget(self.slider)
 
 
