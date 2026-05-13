@@ -40,7 +40,7 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self.slider.setTickInterval(25)
         self.main_layout.addWidget(self.slider)
         # Intervals
-        self.intervals = QtWidgets.QVBoxLayout()
+        self.intervals = QtWidgets.QHBoxLayout()
         last = QtWidgets.QLabel("Last")
         last.setAlignment(QtCore.Qt.AlignLeft)
         self.intervals.addWidget(last)
