@@ -9,6 +9,50 @@ def get_maya_main_win():
     return wrapInstance(int(main_win_addr), QtWidgets.QWidget)
 
 
+def tweening(percentage):
+    selection = cmds.ls(selection=True)
+    if not selection:
+        cmds.warning("Object not selected. Select an Object.")
+    else:
+        pass
+
+    current_time = cmds.currectTime(query=True)
+    # Previous and Next Frames
+    for object in selection:
+        keyed_frames = cmds.listAnimatible(object)
+        for key in keyed_frames:
+            key_frames = cmds.keyframe(key, query=True, timeChange=True)
+            if not key_frames:
+                return None, None
+            
+            before_frames = []
+            after_frames = []
+
+            for time in key_frames:
+                if time < current_time:
+                    before_frames.append(time)
+
+            for time in key_frames:
+                if time > current_time:
+                    after_frames.append(time)
+            
+            if len(before_frames) > 0:
+                previous_frame = before_frames[0]
+                for time in before_frames:
+                    if time > previous_frame:
+                        previous_frame = time
+            else:
+                previous_frame = None
+
+            if len(after_frames) > 0:
+                next_frame = after_frames[0]
+                for time in after_frames:
+                    if time > next_frame:
+                        next_frame = time
+            else:
+                next_frame = None
+
+
 class TweeningToolWindow(QtWidgets.QDialog):
 
     def __init__(self):
@@ -18,6 +62,7 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self.setMaximumHeight(100)
         self.setMinimumWidth(300)
         self._mk_main_layout()
+        self._connect_signals()
 
     def _mk_main_layout(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -57,6 +102,11 @@ class TweeningToolWindow(QtWidgets.QDialog):
 
         self.main_layout.addLayout(self.intervals)
         # Reset to 50%
-        reset = QtWidgets.QPushButton("Reset")
-        self.main_layout.addWidget(reset)
+        self.reset = QtWidgets.QPushButton("Reset")
+        self.main_layout.addWidget(self.reset)
 
+    def _connect_signals(self):
+        self.reset.clicked.connect(self._reset_to_50)
+
+    def _reset_to_50(self):
+        self.slider.setValue(50)
