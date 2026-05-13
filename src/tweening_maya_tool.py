@@ -8,15 +8,17 @@ def get_maya_main_win():
     main_win_addr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_win_addr), QtWidgets.QWidget)
 
+
 def get_list_of_keyed_frames(object):
-    keyed_frames = cmds.listAnimatible(object)
+    keyed_frames = cmds.listAnimatable(object)
     return keyed_frames or []
+
 
 def previous_and_next_frames(key, current_time):
     key_frames = cmds.keyframe(key, query=True, timeChange=True)
     if not key_frames:
         return None, None
-    
+
     before_frames = []
     after_frames = []
 
@@ -27,7 +29,7 @@ def previous_and_next_frames(key, current_time):
     for time in key_frames:
         if time > current_time:
             after_frames.append(time)
-    
+
     if len(before_frames) > 0:
         previous_frame = before_frames[0]
         for time in before_frames:
@@ -39,27 +41,33 @@ def previous_and_next_frames(key, current_time):
     if len(after_frames) > 0:
         next_frame = after_frames[0]
         for time in after_frames:
-            if time > next_frame:
+            if time < next_frame:
                 next_frame = time
     else:
         next_frame = None
 
     return previous_frame, next_frame
 
+
 def tweening(percentage):
     selection = cmds.ls(selection=True)
     if not selection:
         cmds.warning("Object not selected. Select an Object.")
-    else:
-        pass
+        return
 
-    current_time = cmds.currectTime(query=True)
+    current_time = cmds.currentTime(query=True)
     for object in selection:
         for key in get_list_of_keyed_frames(object):
             previous_frame, next_frame = previous_and_next_frames(key,
                                                                   current_time)
-            print(previous_frame)
-            print(next_frame)
+            if previous_frame is None or next_frame is None:
+                continue
+
+            previous_value = cmds.getAttr(key, time=previous_frame)
+            next_value = cmds.getAttr(key, time=next_frame)
+            new_value = previous_value + ((next_value - previous_value) *
+                                          percentage)
+            cmds.setKeyframe(key, time=current_time, value=new_value)
 
 
 class TweeningToolWindow(QtWidgets.QDialog):
@@ -115,7 +123,11 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self.main_layout.addWidget(self.reset)
 
     def _connect_signals(self):
+        self.slider.valueChanged.connect(self._slider_value_changed)
         self.reset.clicked.connect(self._reset_to_50)
 
     def _reset_to_50(self):
         self.slider.setValue(50)
+
+    def _slider_value_changed(self, slider_value):
+        tweening(slider_value / 100)
