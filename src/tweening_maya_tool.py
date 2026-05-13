@@ -8,6 +8,43 @@ def get_maya_main_win():
     main_win_addr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_win_addr), QtWidgets.QWidget)
 
+def get_list_of_keyed_frames(object):
+    keyed_frames = cmds.listAnimatible(object)
+    return keyed_frames or []
+
+def previous_and_next_frames(key, current_time):
+    key_frames = cmds.keyframe(key, query=True, timeChange=True)
+    if not key_frames:
+        return None, None
+    
+    before_frames = []
+    after_frames = []
+
+    for time in key_frames:
+        if time < current_time:
+            before_frames.append(time)
+
+    for time in key_frames:
+        if time > current_time:
+            after_frames.append(time)
+    
+    if len(before_frames) > 0:
+        previous_frame = before_frames[0]
+        for time in before_frames:
+            if time > previous_frame:
+                previous_frame = time
+    else:
+        previous_frame = None
+
+    if len(after_frames) > 0:
+        next_frame = after_frames[0]
+        for time in after_frames:
+            if time > next_frame:
+                next_frame = time
+    else:
+        next_frame = None
+
+    return previous_frame, next_frame
 
 def tweening(percentage):
     selection = cmds.ls(selection=True)
@@ -17,40 +54,12 @@ def tweening(percentage):
         pass
 
     current_time = cmds.currectTime(query=True)
-    # Previous and Next Frames
     for object in selection:
-        keyed_frames = cmds.listAnimatible(object)
-        for key in keyed_frames:
-            key_frames = cmds.keyframe(key, query=True, timeChange=True)
-            if not key_frames:
-                return None, None
-            
-            before_frames = []
-            after_frames = []
-
-            for time in key_frames:
-                if time < current_time:
-                    before_frames.append(time)
-
-            for time in key_frames:
-                if time > current_time:
-                    after_frames.append(time)
-            
-            if len(before_frames) > 0:
-                previous_frame = before_frames[0]
-                for time in before_frames:
-                    if time > previous_frame:
-                        previous_frame = time
-            else:
-                previous_frame = None
-
-            if len(after_frames) > 0:
-                next_frame = after_frames[0]
-                for time in after_frames:
-                    if time > next_frame:
-                        next_frame = time
-            else:
-                next_frame = None
+        for key in get_list_of_keyed_frames(object):
+            previous_frame, next_frame = previous_and_next_frames(key,
+                                                                  current_time)
+            print(previous_frame)
+            print(next_frame)
 
 
 class TweeningToolWindow(QtWidgets.QDialog):
