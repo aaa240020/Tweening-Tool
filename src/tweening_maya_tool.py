@@ -84,14 +84,31 @@ class TweeningToolWindow(QtWidgets.QDialog):
     def _mk_main_layout(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(15, 15, 15, 15)
-        self.main_layout.setSpacing(15)
+        self.main_layout.setSpacing(10)
         self._mk_tween_slider_ui()
 
     def _mk_tween_slider_ui(self):
         # Title
         self.title = QtWidgets.QLabel("Tweening Tool")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
+
+        title_font = self.title.font()
+        title_font.setPointSize(10)
+        title_font.setBold(True)
+        title_font.setUnderline(True)
+        self.title.setFont(title_font)
+
         self.main_layout.addWidget(self.title)
+        # Percentage
+        self.percentage_value = QtWidgets.QLabel("50 %")
+        self.percentage_value.setAlignment(QtCore.Qt.AlignCenter)
+
+        p_font = self.percentage_value.font()
+        p_font.setPointSize(14)
+        p_font.setBold(True)
+        self.percentage_value.setFont(p_font)
+
+        self.main_layout.addWidget(self.percentage_value)
         # Slider
         self.slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.slider.setMinimum(0)
@@ -130,4 +147,5 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self.slider.setValue(50)
 
     def _slider_value_changed(self, slider_value):
+        self.percentage_value.setText(f"{slider_value} %")
         tweening(slider_value / 100)
