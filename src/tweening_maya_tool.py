@@ -27,10 +27,6 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self.title = QtWidgets.QLabel("Tweening Tool")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         self.main_layout.addWidget(self.title)
-        # 50% Title
-        self.fifty_title = QtWidgets.QLabel("50%")
-        self.fifty_title.setAlignment(QtCore.Qt.AlignCenter)
-        self.main_layout.addWidget(self.fifty_title)
         # Slider
         self.slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.slider.setMinimum(0)
@@ -41,11 +37,21 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self.main_layout.addWidget(self.slider)
         # Intervals
         self.intervals = QtWidgets.QHBoxLayout()
+
         last = QtWidgets.QLabel("Last")
         last.setAlignment(QtCore.Qt.AlignLeft)
+        last.setAlignment(QtCore.Qt.AlignTop)
         self.intervals.addWidget(last)
+
+        fifty = QtWidgets.QLabel("50%")
+        fifty.setAlignment(QtCore.Qt.AlignCenter)
+        self.intervals.addWidget(fifty)
+
         next = QtWidgets.QLabel("Next")
+        next.setAlignment(QtCore.Qt.AlignHCenter)
         next.setAlignment(QtCore.Qt.AlignRight)
+        
         self.intervals.addWidget(next)
+
         self.main_layout.addLayout(self.intervals)
 
