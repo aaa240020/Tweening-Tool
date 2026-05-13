@@ -15,11 +15,14 @@ class TweeningToolWindow(QtWidgets.QDialog):
         super().__init__(parent=get_maya_main_win())
         self.setWindowTitle("Tweening Tool")
         self.resize(300, 200)
+        self.setMaximumHeight(100)
+        self.setMinimumWidth(300)
         self._mk_main_layout()
 
     def _mk_main_layout(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(15, 15, 15, 15)
+        self.main_layout.setSpacing(15)
         self._mk_tween_slider_ui()
 
     def _mk_tween_slider_ui(self):
@@ -50,8 +53,10 @@ class TweeningToolWindow(QtWidgets.QDialog):
         next = QtWidgets.QLabel("Next")
         next.setAlignment(QtCore.Qt.AlignHCenter)
         next.setAlignment(QtCore.Qt.AlignRight)
-        
         self.intervals.addWidget(next)
 
         self.main_layout.addLayout(self.intervals)
+        # Reset to 50%
+        reset = QtWidgets.QPushButton("Reset")
+        self.main_layout.addWidget(reset)
 
