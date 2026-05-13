@@ -19,7 +19,7 @@ class TweeningToolWindow(QtWidgets.QDialog):
 
     def _mk_main_layout(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
-        self.main_layout.setContentsMargins(30, 30, 30, 30)
+        self.main_layout.setContentsMargins(15, 15, 15, 15)
         self._mk_tween_slider_ui()
 
     def _mk_tween_slider_ui(self):
@@ -39,3 +39,13 @@ class TweeningToolWindow(QtWidgets.QDialog):
         self.slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
         self.slider.setTickInterval(25)
         self.main_layout.addWidget(self.slider)
+        # Intervals
+        self.intervals = QtWidgets.QVBoxLayout()
+        last = QtWidgets.QLabel("Last")
+        last.setAlignment(QtCore.Qt.AlignLeft)
+        self.intervals.addWidget(last)
+        next = QtWidgets.QLabel("Next")
+        next.setAlignment(QtCore.Qt.AlignRight)
+        self.intervals.addWidget(next)
+        self.main_layout.addLayout(self.intervals)
+
